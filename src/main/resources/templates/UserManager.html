@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <!-- Bootstrap Core CSS -->
+    <link href="../static/assets/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- MetisMenu CSS -->
+    <link href="../static/assets/css/metisMenu.min.css" rel="stylesheet">
+
+    <!-- DataTables CSS -->
+    <link href="../static/assets/css/dataTables.bootstrap.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="../static/assets/css/sb-admin-2.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="../static/assets/css/font-awesome.min.css" rel="stylesheet"
+          type="text/css">
+    <link href="../static/assets/css/boot-crm.css" rel="stylesheet"
+          type="text/css">
+    <link href="../static/assets/css/bootstrap-datetimepicker.min.css" rel="stylesheet"
+          type="text/css">
+
+
+    <!--弹出对话框需要，jQuery的要放前面 ，不能换顺序，不然不能使用，我也不知道为什么-->
+    <script src="../static/assets/js/jquery.js" type="text/javascript"></script>
+    <script src="../static/assets/js/bootstrap.min.js" type="text/javascript"></script>
+    <!-- Vue.js 开发环境版本，包含了有帮助的命令行警告 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <!--  axios  -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+
+    <title>优优图书</title>
+</head>
+<body>
+<div  id="userlist">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-static-top" role="navigation"
+         style="margin-bottom: 0">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse"
+                    data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span> <span
+                    class="icon-bar"></span> <span class="icon-bar"></span> <span
+                    class="icon-bar"></span>
+            </button>
+
+            <a class="navbar-brand" href="#">优优图书后台管理系统</a>
+           <a class="navbar-brand" onclick="deleteItem()">退出登录</a>
+        </div>
+
+        <!--<ul class="nav navbar-top-links navbar-right">-->
+            <!--<li class="dropdown"><a class="dropdown-toggle"-->
+                                    <!--data-toggle="dropdown" href="#"> <i class="fa fa-user fa-fw"></i>-->
+                <!--<i class="fa fa-caret-down"></i>-->
+            <!--</a>-->
+                <!-- /.dropdown-user -->
+            <!--&lt;!&ndash; /.dropdown &ndash;&gt;-->
+        <!--</ul>-->
+
+        <div class="navbar-default sidebar" role="navigation">
+            <div class="sidebar-nav navbar-collapse">
+                <ul class="nav" id="side-menu">
+                    <li><a href="/bookmanager" ><i
+                            class="fa fa-edit fa-fw"></i> 图书管理</a></li>
+                    <li><a href="/usermanager" class="active"><i
+                            class="fa fa-edit fa-fw"></i> 用户管理</a></li>
+                </ul>
+            </div>
+
+        </div>
+        <!-- /.navbar-static-side --> </nav>
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">用户管理</h1>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+        <div class="panel panel-default">
+            <div class="panel-body">
+
+                <div class="form-inline" >
+                    <div class="form-group">
+                        <label for="userName">用户名</label>
+                        <input type="text" class="form-control" id="username" value="请输入需要查找用户" name="username">
+                    </div>
+
+                    <button v-on:click="search(1)" class="btn btn-primary">查询</button>
+                    <input type="button" class="btn btn-primary" data-toggle="modal" value="添加用户" data-target="#userAddDialog" >
+                </div>
+            </div>
+        </div>
+        <div class="row" >
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">用户管理信息</div>
+                    <!-- 用户信息 -->
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                        <tr>
+                            <th>用户Id</th>
+                            <th>用户名</th>
+                            <th>邮箱</th>
+                            <th>注册时间</th>
+                            <th>上次登录时间</th>
+                        </tr>
+                        </thead>
+                        <tbody align="center">
+                            <tr v-for="us in users.list">
+                                <td>{{us.id}}</td>
+                                <td>{{us.username}}</td>
+                                <td>{{us.email}}</td>
+                                <td>{{us.gmt_create}}</td>
+                                <td>{{us.gmt_modified}}</td>
+                                <td>
+                                    <a href="#" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#userEditDialog" v-on:click="getUserById(us.id)">修改</a>
+                                    <a href="#" class="btn btn-danger btn-xs" v-on:click="deleteUser(us.id)">删除</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!--分页模块-->
+                    <div class="container" align="center">
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination ">
+                                <li>
+                                    <a href="#" v-on:click="jump('first')">首页</a>
+                                </li>
+                                <li>
+                                    <a href="#" v-on:click="jump('pre')">上一页</a>
+                                </li>
+
+                                <li v-for="p in users.navigatepageNums" >
+                                    <a href="#" v-on:click="jumpByNumBer(p)">{{p}}</a>
+                                </li>
+
+                                <li>
+                                    <a href="#" v-on:click="jump('next')">下一页</a>
+                                </li>
+                                <li>
+
+                                    <a href="#" v-on:click="jump('last')">尾页</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+                <!-- /.panel -->
+            </div>
+            <!-- /.col-lg-12 -->
+            <!-- 用户添加对话框 -->
+            <div class="modal fade" id="userAddDialog" tabindex="-1" role="dialog"
+                 aria-labelledby="myModalLabel" aria-hidden="false">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h4 class="modal-title" id="add_myModalLabel">添加用户</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-horizontal" id="add_user_form">
+                                <div class="form-group">
+                                    <label for="add_username" class="col-sm-2 control-label">用户名</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="add_username" placeholder="" name="username">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="add_password" class="col-sm-2 control-label">用户密码</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="add_password" placeholder="" name="password">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="add_email" class="col-sm-2 control-label">邮箱</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="add_email" placeholder="" name="email">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="add_registertime" class="col-sm-2 control-label">注册时间</label>
+                                    <div class="col-sm-10">
+                                        <input class="form_datetime" value="" type="date" id="add_registertime" name="registertime">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="add_lastlogintime" class="col-sm-2 control-label">登录时间</label>
+                                    <div class="col-sm-10">
+                                        <input class="form_datetime" value="" type="date" id="add_lastlogintime" name="lastlogintime">
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            <button type="button" class="btn btn-primary" v-on:click="addUser()">确认添加</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 用户 编辑对话框 -->
+            <div class="modal fade" id="userEditDialog" tabindex="-1" role="dialog"
+                 aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">修改用户信息</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-horizontal" id="edit_user_form">
+                                <div class="form-group">
+                                    <label for="edit_username" class="col-sm-2 control-label">用户名</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="edit_username" placeholder="用户名" name="username">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="edit_password" class="col-sm-2 control-label">用户密码</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="edit_password" placeholder="用户密码" name="password" readonly="readonly">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="edit_email" class="col-sm-2 control-label">邮箱</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="edit_email" placeholder="邮箱" name="email" >
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="edit_registertime" class="col-sm-2 control-label">注册时间</label>
+                                    <div class="col-sm-10">
+                                        <input class="form_datetime" value="" type="text" id="edit_registertime" name="registertime">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="edit_lastlogintime" class="col-sm-2 control-label">登录时间</label>
+                                    <div class="col-sm-10">
+                                        <input class="form_datetime" value="" type="text" id="edit_lastlogintime" name="lastlogintime">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            <button type="button" class="btn btn-primary" v-on:click="updateUser()">保存修改</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- /#wrapper -->
+
+    <script>
+        function deleteItem() {
+            localStorage.removeItem("token");
+            location.href="/login";
+        }
+        var  userId ;
+        var pageNum ;
+        var vue = new Vue({
+            el: '#userlist',
+            data: {
+                users: [],
+                user:[]
+            },
+            mounted:function(){ //mounted　表示这个 Vue 对象加载成功了
+               var jwt= localStorage.getItem("token");
+               if(jwt==null){
+                   location.href="/login";
+               }
+                this.list(1);
+            },
+            methods:{
+
+                list:function (start) {
+                    var self = this;
+                    var url = "admin/user?start="+start;
+                    //添加查询
+                    var username = document.getElementById("username").value;
+                    url = url+"&username="+username;
+
+                    axios.get(url,{
+                        headers: {
+                            'Authorization': localStorage.getItem("token")
+                        }
+                    }).then(function (response) {
+                        if(response.data.statusCode===401){
+                            localStorage.removeItem("token");
+                            location.href="/login";
+                        }
+                        console.log(response.data);
+                        self.users = response.data;
+                        pageNum=self.users.pageNum;
+                      //  alert(self.users)
+                    })
+                },
+                search:function (start) {
+                   vue.list(start);
+                },
+                addUser:function (){
+
+                    var  add_username = document.getElementById("add_username").value;
+                    var  add_password= document.getElementById("add_password").value;
+                    var  add_email= document.getElementById("add_email").value;
+                    var  add_registertime= document.getElementById("add_registertime").value;
+                    var  add_lastlogintime= document.getElementById("add_lastlogintime").value;
+                    var  url = "/admin/user";
+                    axios.put(url,{
+                        headers: {
+                            'Authorization': localStorage.getItem("token")
+                        },
+                        username :add_username,
+                        password:add_password,
+                        email:add_email,
+                        gmt_create:add_registertime,
+                        gmt_modified:add_lastlogintime
+
+                    }).then(function (response) {
+                        console.log(response.data);
+                        if(response.data=="ok"){
+                            vue.list(1);
+                            alert("添加成功")
+                            $('#userAddDialog').modal('hide');
+                        }
+                        else {
+                            alert("添加失败")
+                        }
+                    });
+
+                    document.getElementById("add_username").value="";
+                    document.getElementById("add_password").value="";
+                    document.getElementById("add_email").value="";
+                    document.getElementById("add_registertime").value="";
+                    document.getElementById("add_lastlogintime").value="";
+                },
+                getUserById:function (userid) {
+                    userId=userid;
+                    var url = "/admin/userById?userId="+userid;
+                    axios.get(url,{
+                        headers: {
+                            'Authorization': localStorage.getItem("token")
+                        }
+                    }).then(function (response) {
+                        this.user = response.data;
+                        console.log(this.user);
+                         // alert(user)
+
+                        document.getElementById("edit_username").value=this.user.username;
+                        document.getElementById("edit_email").value=this.user.email;
+                        document.getElementById("edit_registertime").value=this.user.gmt_create;
+                        document.getElementById("edit_lastlogintime").value=this.user.gmt_modified;
+                    });
+
+
+                },
+                updateUser:function () {
+                    var  add_username = document.getElementById("edit_username").value;
+                    var  add_email= document.getElementById("edit_email").value;
+                    var  add_registertime= document.getElementById("edit_registertime").value;
+                    var  add_lastlogintime= document.getElementById("edit_lastlogintime").value;
+                    var  url = "/admin/user";
+                   // alert(userId);
+                    axios.post(url,{
+                        headers: {
+                            'Authorization': localStorage.getItem("token")
+                        },
+                        id:userId,
+                        username :add_username,
+                        email:add_email,
+                        gmt_create:add_registertime,
+                        gmt_modified:add_lastlogintime
+
+                    }).then(function (response) {
+                        console.log(response.data);
+                        if(response.data=="ok"){
+                            alert("修改成功")
+                            $('#userEditDialog').modal('hide');
+                            vue.list(pageNum);
+                        }
+                        else {
+                            alert("修改失败")
+                        }
+                    });
+
+                },
+                deleteUser:function (userid) {
+
+                    if(confirm("是否真的删除该用户")){
+                        var url = "/admin/user?userId="+userid;
+                        axios.delete(url,{
+                            headers: {
+                                'Authorization': localStorage.getItem("token")
+                            }
+                        }).then(function (response) {
+
+                            if(response.data=="ok"){
+                                alert("删除成功");
+                                vue.list(pageNum);
+                            }else {
+                                alert("删除失败");
+                            }
+                            // alert(user)
+                        });
+                    }
+
+                }
+                ,jumpByNumBer: function(start){
+                    if(start!=this.users.pageNum)
+                        vue.list(start);
+                },
+                jump: function(page){
+                    if('first'== page && 1!=vue.users.pageNum)
+                        vue.list(1);
+
+                    else if('pre'== page && vue.users.hasPreviousPage )
+                        vue.list(vue.users.prePage);
+
+                    else if('next'== page && vue.users.hasNextPage)
+                        vue.list(vue.users.nextPage);
+
+                    else if('last'== page && vue.users.pageNum!=vue.users.pages)
+                        vue.list(vue.users.pages);
+
+                }
+            }
+
+        })
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link href="../static/assets/css/style-login.css" rel="stylesheet" type="text/css"/>
+    <link href="../static/assets/css/bootstrap.css" rel="stylesheet">
+    <!--external css-->
+
+    <!-- Custom styles for this template -->
+    <link href="../static/assets/css/style.css" rel="stylesheet">
+    <!--<script src="../static/assets/js/bootstrap.min.js" type="text/javascript"></script>-->
+    <!--<script src="../static/assets/js/jquery-ui-1.9.2.custom.min.js" type="text/javascript"></script>-->
+    <script src="../static/assets/js/star-rating.min.js" type="text/javascript"></script>
+    <!--<script src="../static/assets/js/jquery.js" type="text/javascript"></script>-->
+
+
+    <!-- Vue.js 开发环境版本，包含了有帮助的命令行警告 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <!--  axios  -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <title>优优图书</title>
+</head>
+<body>
+<div class="container" style="margin-top: 10%" id="login">
+    <div class="row">
+        <div class="col-md-offset-3 col-md-6">
+            <div class="form-horizontal" id="logForm_mod">
+                <span class="heading">管理员登录</span>
+                <div class="form-group">
+                    <input type="text" class="form-control" id="loginAdminname" placeholder="账号" name="adminname">
+                    <i class="fa fa-user"></i>
+                </div>
+                <div class="form-group help">
+                    <input type="password" class="form-control" id="loginAdminpassword" placeholder="密　码" name="adminpassword">
+                    <i class="fa fa-lock"></i>
+                    <a href="#" class="fa fa-question-circle"></a>
+                </div>
+                <div class="form-group">
+                    <button   type="button" class="btn btn-default" onclick="login()">登录</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function login() {
+
+            var adminName = document.getElementById('loginAdminname').value;
+            var password = document.getElementById("loginAdminpassword").value;
+          //  alert(adminName+password);
+            var url = "/login";
+            axios.post(url, {
+                adminname: adminName,
+                password: password
+            }).then(function (response) {
+                console.log(response);
+                // alert(response.data);
+                if (response.data != "-1") {
+                  //  alert(response.data);
+                    localStorage.setItem("token", response.data);
+                    location.href = "/usermanager";
+                }
+                else {
+                    alert("登录失败");
+                }
+
+            }).catch(function (error) {
+                    console.log(error);
+            });
+        }
+    </script>
+</div>
+</body>
+</html>

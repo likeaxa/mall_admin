@@ -1,10 +1,15 @@
 package com.zsc.mall1.service;
 
 
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.zsc.mall1.bean.ProSam;
 import com.zsc.mall1.bean.Product;
 import com.zsc.mall1.mapper.ProductMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -15,6 +20,12 @@ public class ProductService {
 
 
     private  ProductMapper productMapper;
+    private RestTemplate restTemplate;
+
+    @Autowired
+    public void setRestTemplate(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
     @Autowired
     public void setProductMapper(ProductMapper productMapper) {
@@ -88,5 +99,29 @@ public class ProductService {
         else {
             return value;
         }
+    }
+
+    public List<Product> getSimProByName(String productName) {
+        return productMapper.getSimProductByName(productName);
+    }
+
+    public List<ProSam> getComProductById(Integer id) {
+
+        String url = "127.0.0.1:8080/api/similar/{"+id.toString()+"}";
+
+        String string = restTemplate.getForObject(url, String.class);
+
+        //string转换成ProSam对象类型数组
+        Gson gs = new Gson();
+        return gs.fromJson(string,new TypeToken<List<ProSam>>(){}.getType());
+    }
+
+    public List<Product> getHotProduct() {
+        List<Product> products= productMapper.getHotProduct();
+
+        for(Product product : products){
+            product.setAvg(Double.parseDouble(String.format("%.2f", product.getAvg())));
+        }
+        return products;
     }
 }

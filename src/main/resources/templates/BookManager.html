@@ -37,17 +37,17 @@
 <div id="wrapper">
 
     <!-- Navigation -->
-    <nav class="navbar navbar-inverse navbar-static-top" role="navigation"
-         style="margin-bottom: 0"  >
+    <nav class="navbar navbar-default navbar-static-top" role="navigation"
+         style="margin-bottom: 0">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse"
-            data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span> <span
-                class="icon-bar"></span> <span class="icon-bar"></span> <span
-                class="icon-bar"></span>
+                    data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span> <span
+                    class="icon-bar"></span> <span class="icon-bar"></span> <span
+                    class="icon-bar"></span>
             </button>
             <a class="navbar-brand" href="#">优优图书后台管理系统</a>
-            <a class="navbar-brand" onclick="deleteItem()" href="#">退出登录</a>
+            <a class="navbar-brand" onclick="deleteItem()">退出登录</a>
         </div>
 
 
@@ -67,6 +67,8 @@
                             class="fa fa-edit fa-fw"></i> 图书管理</a></li>
                     <li><a href="/usermanager"><i
                             class="fa fa-edit fa-fw"></i> 用户管理</a></li>
+                    <li><a href="/adminmanager"><i
+                            class="fa fa-edit fa-fw"></i> 商家推荐</a></li>
                     <!--<shiro:hasRole name="admin">-->
                     <!--&lt;!&ndash;-->
                     <!--<li><a href="adminlist"  ><i-->
@@ -131,7 +133,8 @@
                                 <td><a :href="b.image">{{b.image}}</a></td>
                                 <td>
                                     <button class="btn btn-primary btn-xs" data-toggle="modal"
-                                            data-target="#movieEditDialog" v-on:click="getProById(b.id)">修改</button>
+                                            data-target="#movieEditDialog" v-on:click="getProById(b.id)">修改
+                                    </button>
                                     <button class="btn btn-danger btn-xs" v-on:click="deletePro(b.id)">删除</button>
                                 </td>
                             </tr>
@@ -230,7 +233,8 @@
                                 <div class="form-group">
                                     <label for="edit_description" class="col-sm-2 control-label">图书简介</label>
                                     <div class="col-sm-10">
-                                        <input type="text" required="required" class="form-control" id="edit_description"
+                                        <input type="text" required="required" class="form-control"
+                                               id="edit_description"
                                                placeholder="" name="description">
                                     </div>
                                 </div>
@@ -349,8 +353,9 @@
 <script>
     function deleteItem() {
         localStorage.removeItem("token");
-        location.href="/login";
+        location.href = "/login";
     }
+
     var pageNum;
     var proId;
     var vue = new Vue({
@@ -360,9 +365,9 @@
 
         },
         mounted: function () { //mounted　表示这个 Vue 对象加载成功了
-            var jwt= localStorage.getItem("token");
-            if(jwt==null){
-                location.href="/login";
+            var jwt = localStorage.getItem("token");
+            if (jwt == null) {
+                location.href = "/login";
             }
             this.list(1);
         },
@@ -374,14 +379,14 @@
                 var username = document.getElementById("bookName").value;
                 url = url + "&bookName=" + username;
 
-                axios.get(url,{
+                axios.get(url, {
                     headers: {
                         'Authorization': localStorage.getItem("token")
                     }
                 }).then(function (response) {
-                    if(response.data.statusCode===401){
+                    if (response.data.statusCode === 401) {
                         localStorage.removeItem("token");
-                        location.href="/login";
+                        location.href = "/login";
                     }
                     console.log(response.data);
                     self.books = response.data;
@@ -392,11 +397,11 @@
             }, search: function () {
                 vue.list(1);
             },
-            getProById:function (id) {
-                proId= id;
-               var   url = "/admin/productId?productId="+id;
+            getProById: function (id) {
+                proId = id;
+                var url = "/admin/productId?productId=" + id;
 
-                axios.get(url,{
+                axios.get(url, {
                     headers: {
                         'Authorization': localStorage.getItem("token")
                     }
@@ -405,8 +410,8 @@
                     var pro = response.data;
                     // alert(user)
                     document.getElementById("edit_bookName").value = pro.product_name;
-                    document.getElementById("edit_showyear").value =pro.gmt_create ;
-                    document.getElementById("edit_picture").value =pro.image ;
+                    document.getElementById("edit_showyear").value = pro.gmt_create;
+                    document.getElementById("edit_picture").value = pro.image;
                     document.getElementById("edit_publisher").value = pro.publisher;
                     document.getElementById("edit_anther").value = pro.author;
                     document.getElementById("edit_tags").value = pro.tags;
@@ -414,7 +419,7 @@
                     document.getElementById("edit_price").value = pro.price;
                 });
             },
-            updatePro:function () {
+            updatePro: function () {
                 var add_bookName = document.getElementById("edit_bookName").value;
                 var add_showyear = document.getElementById("edit_showyear").value;
                 var add_picture = document.getElementById("edit_picture").value;
@@ -423,13 +428,10 @@
                 var add_tags = document.getElementById("edit_tags").value;
                 var add_description = document.getElementById("edit_description").value;
                 var add_price = document.getElementById("edit_price").value;
-                var  url = "/admin/product";
+                var url = "/admin/product";
 
-                axios.post(url,{
-                    headers: {
-                        'Authorization': localStorage.getItem("token")
-                    },
-                    id : proId,
+                axios.post(url, {
+                    id: proId,
                     gmt_create: add_showyear,
                     product_name: add_bookName,
                     author: add_anther,
@@ -439,9 +441,13 @@
                     summary: add_description,
                     price: add_price
 
+                }, {
+                    headers: {
+                        'Authorization': localStorage.getItem("token")
+                    }
                 }).then(function (response) {
                     console.log(response.data);
-                    if(response.data=="ok"){
+                    if (response.data == "ok") {
                         alert("修改成功")
                         $('#movieEditDialog').modal('hide');
                         vue.list(pageNum);
@@ -466,19 +472,23 @@
                 url = "admin/product";
 
                 axios.put(url, {
-                    headers: {
-                        'Authorization': localStorage.getItem("token")
-                    },
-                    gmt_create: add_showyear,
-                    product_name: add_bookName,
-                    author: add_anther,
-                    tags: add_tags,
-                    image: add_picture,
-                    publisher: add_publisher,
-                    summary: add_description,
-                    price: add_price
 
-                }).then(function (response) {
+                        gmt_create: add_showyear,
+                        product_name: add_bookName,
+                        author: add_anther,
+                        tags: add_tags,
+                        image: add_picture,
+                        publisher: add_publisher,
+                        summary: add_description,
+                        price: add_price
+
+
+                    }, {
+                        headers: {
+                            'Authorization': localStorage.getItem("token")
+                        }
+                    }
+                ).then(function (response) {
                     console.log(response.data);
                     if (response.data == "ok") {
                         vue.list(1);
@@ -502,7 +512,7 @@
             deletePro: function (productId) {
                 if (confirm("是否真的删除该图书")) {
                     var url = "/admin/product?productId=" + productId;
-                    axios.delete(url,{
+                    axios.delete(url, {
                         headers: {
                             'Authorization': localStorage.getItem("token")
                         }

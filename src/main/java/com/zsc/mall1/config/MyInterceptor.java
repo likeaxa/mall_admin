@@ -1,6 +1,9 @@
 package com.zsc.mall1.config;
 
+import com.zsc.mall1.service.Result;
 import com.zsc.mall1.util.JwtUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -8,23 +11,25 @@ import javax.servlet.http.HttpServletResponse;
 
 public class MyInterceptor implements HandlerInterceptor {
 
+
+
+
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle( HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
             //System.out.println("preHandle");
             String token  = request.getHeader("Authorization");
             if(token==null||"".equals(token)){
-                response.sendRedirect("/login");
-                return false;
+                System.out.println("token null");
+                Result.setStatusCode(401);
             }else {
-                String s = JwtUtil.parseJWT(token);
-                if(s==null){
-                    response.sendRedirect("/login");
-                    return false;
+                if(JwtUtil.parseJWT(token)==null){
+                    Result.setStatusCode(401);
                 }else {
-                    return true;
+                    Result.setStatusCode(200);
                 }
             }
 
+        return true;
     }
 }

@@ -15,6 +15,35 @@ public class Product {
     private String price;
     private Integer cate_id;
 
+    private Double avg;
+    private Integer count;
+    private Integer total;
+
+
+    public Double getAvg() {
+        return avg;
+    }
+
+    public void setAvg(Double avg) {
+        this.avg = avg;
+    }
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
+    }
+
+    public Integer getTotal() {
+        return total;
+    }
+
+    public void setTotal(Integer total) {
+        this.total = total;
+    }
+
     public Integer getCate_id() {
         return cate_id;
     }

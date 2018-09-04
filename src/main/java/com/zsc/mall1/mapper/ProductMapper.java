@@ -1,5 +1,6 @@
 package com.zsc.mall1.mapper;
 
+import com.zsc.mall1.bean.ProSam;
 import com.zsc.mall1.bean.Product;
 import com.zsc.mall1.bean.User;
 import org.apache.ibatis.annotations.Delete;
@@ -33,4 +34,14 @@ public interface ProductMapper {
 
     @Delete("delete from product where id = #{id}")
     void deleteProduct(Integer id);
+
+
+    @Select("select id,product_name, avg,count,total ,image from product " +
+            "where product_name like CONCAT(CONCAT('%', #{name}),'%')")
+    List<Product> getSimProductByName(String productName);
+
+
+    @Select("select id,product_name, avg,count,total ,image from product " +
+            "where count>200 and cate_id=2 and avg > 4.6 order by count desc")
+    List<Product> getHotProduct();
 }

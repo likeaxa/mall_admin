@@ -36,7 +36,7 @@
     <title>优优图书</title>
 </head>
 <body>
-<div  id="userlist">
+<div id="userlist">
 
     <!-- Navigation -->
     <nav class="navbar navbar-default navbar-static-top" role="navigation"
@@ -50,25 +50,27 @@
             </button>
 
             <a class="navbar-brand" href="#">优优图书后台管理系统</a>
-           <a class="navbar-brand" onclick="deleteItem()">退出登录</a>
+            <a class="navbar-brand" onclick="deleteItem()">退出登录</a>
         </div>
 
         <!--<ul class="nav navbar-top-links navbar-right">-->
-            <!--<li class="dropdown"><a class="dropdown-toggle"-->
-                                    <!--data-toggle="dropdown" href="#"> <i class="fa fa-user fa-fw"></i>-->
-                <!--<i class="fa fa-caret-down"></i>-->
-            <!--</a>-->
-                <!-- /.dropdown-user -->
-            <!--&lt;!&ndash; /.dropdown &ndash;&gt;-->
+        <!--<li class="dropdown"><a class="dropdown-toggle"-->
+        <!--data-toggle="dropdown" href="#"> <i class="fa fa-user fa-fw"></i>-->
+        <!--<i class="fa fa-caret-down"></i>-->
+        <!--</a>-->
+        <!-- /.dropdown-user -->
+        <!--&lt;!&ndash; /.dropdown &ndash;&gt;-->
         <!--</ul>-->
 
         <div class="navbar-default sidebar" role="navigation">
             <div class="sidebar-nav navbar-collapse">
                 <ul class="nav" id="side-menu">
-                    <li><a href="/bookmanager" ><i
+                    <li><a href="/bookmanager"><i
                             class="fa fa-edit fa-fw"></i> 图书管理</a></li>
                     <li><a href="/usermanager" class="active"><i
                             class="fa fa-edit fa-fw"></i> 用户管理</a></li>
+                    <li><a href="/adminmanager" ><i
+                            class="fa fa-edit fa-fw"></i> 商家推荐</a></li>
                 </ul>
             </div>
 
@@ -85,18 +87,19 @@
         <div class="panel panel-default">
             <div class="panel-body">
 
-                <div class="form-inline" >
+                <div class="form-inline">
                     <div class="form-group">
                         <label for="userName">用户名</label>
                         <input type="text" class="form-control" id="username" value="请输入需要查找用户" name="username">
                     </div>
 
                     <button v-on:click="search(1)" class="btn btn-primary">查询</button>
-                    <input type="button" class="btn btn-primary" data-toggle="modal" value="添加用户" data-target="#userAddDialog" >
+                    <input type="button" class="btn btn-primary" data-toggle="modal" value="添加用户"
+                           data-target="#userAddDialog">
                 </div>
             </div>
         </div>
-        <div class="row" >
+        <div class="row">
             <div class="col-lg-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">用户管理信息</div>
@@ -112,17 +115,18 @@
                         </tr>
                         </thead>
                         <tbody align="center">
-                            <tr v-for="us in users.list">
-                                <td>{{us.id}}</td>
-                                <td>{{us.username}}</td>
-                                <td>{{us.email}}</td>
-                                <td>{{us.gmt_create}}</td>
-                                <td>{{us.gmt_modified}}</td>
-                                <td>
-                                    <a href="#" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#userEditDialog" v-on:click="getUserById(us.id)">修改</a>
-                                    <a href="#" class="btn btn-danger btn-xs" v-on:click="deleteUser(us.id)">删除</a>
-                                </td>
-                            </tr>
+                        <tr v-for="us in users.list">
+                            <td>{{us.id}}</td>
+                            <td>{{us.username}}</td>
+                            <td>{{us.email}}</td>
+                            <td>{{us.gmt_create}}</td>
+                            <td>{{us.gmt_modified}}</td>
+                            <td>
+                                <a href="#" class="btn btn-primary btn-xs" data-toggle="modal"
+                                   data-target="#userEditDialog" v-on:click="getUserById(us.id)">修改</a>
+                                <a href="#" class="btn btn-danger btn-xs" v-on:click="deleteUser(us.id)">删除</a>
+                            </td>
+                        </tr>
                         </tbody>
                     </table>
                     <!--分页模块-->
@@ -136,7 +140,7 @@
                                     <a href="#" v-on:click="jump('pre')">上一页</a>
                                 </li>
 
-                                <li v-for="p in users.navigatepageNums" >
+                                <li v-for="p in users.navigatepageNums">
                                     <a href="#" v-on:click="jumpByNumBer(p)">{{p}}</a>
                                 </li>
 
@@ -170,32 +174,37 @@
                                 <div class="form-group">
                                     <label for="add_username" class="col-sm-2 control-label">用户名</label>
                                     <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="add_username" placeholder="" name="username">
+                                        <input type="text" class="form-control" id="add_username" placeholder=""
+                                               name="username">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="add_password" class="col-sm-2 control-label">用户密码</label>
                                     <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="add_password" placeholder="" name="password">
+                                        <input type="text" class="form-control" id="add_password" placeholder=""
+                                               name="password">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="add_email" class="col-sm-2 control-label">邮箱</label>
                                     <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="add_email" placeholder="" name="email">
+                                        <input type="text" class="form-control" id="add_email" placeholder=""
+                                               name="email">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="add_registertime" class="col-sm-2 control-label">注册时间</label>
                                     <div class="col-sm-10">
-                                        <input class="form_datetime" value="" type="date" id="add_registertime" name="registertime">
+                                        <input class="form_datetime" value="" type="date" id="add_registertime"
+                                               name="registertime">
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="add_lastlogintime" class="col-sm-2 control-label">登录时间</label>
                                     <div class="col-sm-10">
-                                        <input class="form_datetime" value="" type="date" id="add_lastlogintime" name="lastlogintime">
+                                        <input class="form_datetime" value="" type="date" id="add_lastlogintime"
+                                               name="lastlogintime">
                                     </div>
                                 </div>
 
@@ -227,34 +236,39 @@
                                 <div class="form-group">
                                     <label for="edit_username" class="col-sm-2 control-label">用户名</label>
                                     <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="edit_username" placeholder="用户名" name="username">
+                                        <input type="text" class="form-control" id="edit_username" placeholder="用户名"
+                                               name="username">
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="edit_password" class="col-sm-2 control-label">用户密码</label>
                                     <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="edit_password" placeholder="用户密码" name="password" readonly="readonly">
+                                        <input type="text" class="form-control" id="edit_password" placeholder="用户密码"
+                                               name="password" readonly="readonly">
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="edit_email" class="col-sm-2 control-label">邮箱</label>
                                     <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="edit_email" placeholder="邮箱" name="email" >
+                                        <input type="text" class="form-control" id="edit_email" placeholder="邮箱"
+                                               name="email">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="edit_registertime" class="col-sm-2 control-label">注册时间</label>
                                     <div class="col-sm-10">
-                                        <input class="form_datetime" value="" type="text" id="edit_registertime" name="registertime">
+                                        <input class="form_datetime" value="" type="text" id="edit_registertime"
+                                               name="registertime">
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="edit_lastlogintime" class="col-sm-2 control-label">登录时间</label>
                                     <div class="col-sm-10">
-                                        <input class="form_datetime" value="" type="text" id="edit_lastlogintime" name="lastlogintime">
+                                        <input class="form_datetime" value="" type="text" id="edit_lastlogintime"
+                                               name="lastlogintime">
                                     </div>
                                 </div>
 
@@ -274,182 +288,192 @@
 
 <!-- /#wrapper -->
 
-    <script>
-        function deleteItem() {
-            localStorage.removeItem("token");
-            location.href="/login";
-        }
-        var  userId ;
-        var pageNum ;
-        var vue = new Vue({
-            el: '#userlist',
-            data: {
-                users: [],
-                user:[]
-            },
-            mounted:function(){ //mounted　表示这个 Vue 对象加载成功了
-               var jwt= localStorage.getItem("token");
-               if(jwt==null){
-                   location.href="/login";
-               }
-                this.list(1);
-            },
-            methods:{
+<script>
+    function deleteItem() {
+        localStorage.removeItem("token");
+        location.href = "/login";
+    }
 
-                list:function (start) {
-                    var self = this;
-                    var url = "admin/user?start="+start;
-                    //添加查询
-                    var username = document.getElementById("username").value;
-                    url = url+"&username="+username;
-
-                    axios.get(url,{
-                        headers: {
-                            'Authorization': localStorage.getItem("token")
-                        }
-                    }).then(function (response) {
-                        if(response.data.statusCode===401){
-                            localStorage.removeItem("token");
-                            location.href="/login";
-                        }
-                        console.log(response.data);
-                        self.users = response.data;
-                        pageNum=self.users.pageNum;
-                      //  alert(self.users)
-                    })
-                },
-                search:function (start) {
-                   vue.list(start);
-                },
-                addUser:function (){
-
-                    var  add_username = document.getElementById("add_username").value;
-                    var  add_password= document.getElementById("add_password").value;
-                    var  add_email= document.getElementById("add_email").value;
-                    var  add_registertime= document.getElementById("add_registertime").value;
-                    var  add_lastlogintime= document.getElementById("add_lastlogintime").value;
-                    var  url = "/admin/user";
-                    axios.put(url,{
-                        headers: {
-                            'Authorization': localStorage.getItem("token")
-                        },
-                        username :add_username,
-                        password:add_password,
-                        email:add_email,
-                        gmt_create:add_registertime,
-                        gmt_modified:add_lastlogintime
-
-                    }).then(function (response) {
-                        console.log(response.data);
-                        if(response.data=="ok"){
-                            vue.list(1);
-                            alert("添加成功")
-                            $('#userAddDialog').modal('hide');
-                        }
-                        else {
-                            alert("添加失败")
-                        }
-                    });
-
-                    document.getElementById("add_username").value="";
-                    document.getElementById("add_password").value="";
-                    document.getElementById("add_email").value="";
-                    document.getElementById("add_registertime").value="";
-                    document.getElementById("add_lastlogintime").value="";
-                },
-                getUserById:function (userid) {
-                    userId=userid;
-                    var url = "/admin/userById?userId="+userid;
-                    axios.get(url,{
-                        headers: {
-                            'Authorization': localStorage.getItem("token")
-                        }
-                    }).then(function (response) {
-                        this.user = response.data;
-                        console.log(this.user);
-                         // alert(user)
-
-                        document.getElementById("edit_username").value=this.user.username;
-                        document.getElementById("edit_email").value=this.user.email;
-                        document.getElementById("edit_registertime").value=this.user.gmt_create;
-                        document.getElementById("edit_lastlogintime").value=this.user.gmt_modified;
-                    });
-
-
-                },
-                updateUser:function () {
-                    var  add_username = document.getElementById("edit_username").value;
-                    var  add_email= document.getElementById("edit_email").value;
-                    var  add_registertime= document.getElementById("edit_registertime").value;
-                    var  add_lastlogintime= document.getElementById("edit_lastlogintime").value;
-                    var  url = "/admin/user";
-                   // alert(userId);
-                    axios.post(url,{
-                        headers: {
-                            'Authorization': localStorage.getItem("token")
-                        },
-                        id:userId,
-                        username :add_username,
-                        email:add_email,
-                        gmt_create:add_registertime,
-                        gmt_modified:add_lastlogintime
-
-                    }).then(function (response) {
-                        console.log(response.data);
-                        if(response.data=="ok"){
-                            alert("修改成功")
-                            $('#userEditDialog').modal('hide');
-                            vue.list(pageNum);
-                        }
-                        else {
-                            alert("修改失败")
-                        }
-                    });
-
-                },
-                deleteUser:function (userid) {
-
-                    if(confirm("是否真的删除该用户")){
-                        var url = "/admin/user?userId="+userid;
-                        axios.delete(url,{
-                            headers: {
-                                'Authorization': localStorage.getItem("token")
-                            }
-                        }).then(function (response) {
-
-                            if(response.data=="ok"){
-                                alert("删除成功");
-                                vue.list(pageNum);
-                            }else {
-                                alert("删除失败");
-                            }
-                            // alert(user)
-                        });
-                    }
-
-                }
-                ,jumpByNumBer: function(start){
-                    if(start!=this.users.pageNum)
-                        vue.list(start);
-                },
-                jump: function(page){
-                    if('first'== page && 1!=vue.users.pageNum)
-                        vue.list(1);
-
-                    else if('pre'== page && vue.users.hasPreviousPage )
-                        vue.list(vue.users.prePage);
-
-                    else if('next'== page && vue.users.hasNextPage)
-                        vue.list(vue.users.nextPage);
-
-                    else if('last'== page && vue.users.pageNum!=vue.users.pages)
-                        vue.list(vue.users.pages);
-
-                }
+    var userId;
+    var pageNum;
+    var vue = new Vue({
+        el: '#userlist',
+        data: {
+            users: [],
+            user: []
+        },
+        mounted: function () { //mounted　表示这个 Vue 对象加载成功了
+            var jwt = localStorage.getItem("token");
+            if (jwt == null) {
+                location.href = "/login";
             }
+            this.list(1);
+        },
+        methods: {
 
-        })
+            list: function (start) {
+                var self = this;
+                var url = "admin/user?start=" + start;
+                //添加查询
+                var username = document.getElementById("username").value;
+                url = url + "&username=" + username;
 
-    </script>
+                axios.get(url, {
+                    headers: {
+                        'Authorization': localStorage.getItem("token")
+                    }
+                }).then(function (response) {
+                    if (response.data.statusCode === 401) {
+                        localStorage.removeItem("token");
+                        location.href = "/login";
+                    }
+                    //alert(response.status);
+                    console.log(response.data);
+                    self.users = response.data;
+                    pageNum = self.users.pageNum;
+                    //  alert(self.users)
+                }).catch(function (reason) {
+                    console.log(reason);
+                    //alert(reason.status);
+
+                })
+            },
+            search: function (start) {
+                vue.list(start);
+            },
+            addUser: function () {
+
+                var add_username = document.getElementById("add_username").value;
+                var add_password = document.getElementById("add_password").value;
+                var add_email = document.getElementById("add_email").value;
+                var add_registertime = document.getElementById("add_registertime").value;
+                var add_lastlogintime = document.getElementById("add_lastlogintime").value;
+                var url = "/admin/user";
+                axios.put(url, {
+
+                        username: add_username,
+                        password: add_password,
+                        email: add_email,
+                        gmt_create: add_registertime,
+                        gmt_modified: add_lastlogintime
+
+                }, {
+                    headers: {
+                        'Authorization': localStorage.getItem("token")
+                    }
+                }).then(function (response) {
+                    console.log(response.data);
+                    if (response.data == "ok") {
+                        vue.list(1);
+                        alert("添加成功")
+                        $('#userAddDialog').modal('hide');
+                    }
+                    else {
+                        alert("添加失败")
+                    }
+                });
+
+                document.getElementById("add_username").value = "";
+                document.getElementById("add_password").value = "";
+                document.getElementById("add_email").value = "";
+                document.getElementById("add_registertime").value = "";
+                document.getElementById("add_lastlogintime").value = "";
+            },
+            getUserById: function (userid) {
+                userId = userid;
+                var url = "/admin/userById?userId=" + userid;
+                axios.get(url, {
+                    headers: {
+                        'Authorization': localStorage.getItem("token")
+                    }
+                }).then(function (response) {
+                    this.user = response.data;
+                    console.log(this.user);
+                    // alert(user)
+
+                    document.getElementById("edit_username").value = this.user.username;
+                    document.getElementById("edit_email").value = this.user.email;
+                    document.getElementById("edit_registertime").value = this.user.gmt_create;
+                    document.getElementById("edit_lastlogintime").value = this.user.gmt_modified;
+                });
+
+
+            },
+            updateUser: function () {
+                var add_username = document.getElementById("edit_username").value;
+                var add_email = document.getElementById("edit_email").value;
+                var add_registertime = document.getElementById("edit_registertime").value;
+                var add_lastlogintime = document.getElementById("edit_lastlogintime").value;
+                var url = "/admin/user";
+                // alert(userId);
+                axios.post(url, {
+
+                        id: userId,
+                        username: add_username,
+                        email: add_email,
+                        gmt_create: add_registertime,
+                        gmt_modified: add_lastlogintime
+
+                }, {
+                    headers: {
+                        'Authorization': localStorage.getItem("token")
+                    }
+                }).then(function (response) {
+                    console.log(response.data);
+                    if (response.data == "ok") {
+                        alert("修改成功")
+                        $('#userEditDialog').modal('hide');
+                        vue.list(pageNum);
+                    }
+                    else {
+                        alert("修改失败")
+                    }
+                });
+
+            },
+            deleteUser: function (userid) {
+
+                if (confirm("是否真的删除该用户")) {
+                    var url = "/admin/user?userId=" + userid;
+                    axios.delete(url, {
+                        headers: {
+                            'Authorization': localStorage.getItem("token")
+                        }
+                    }).then(function (response) {
+
+                        if (response.data == "ok") {
+                            alert("删除成功");
+                            vue.list(pageNum);
+                        } else {
+                            alert("删除失败");
+                        }
+                        // alert(user)
+                    });
+                }
+
+            }
+            , jumpByNumBer: function (start) {
+                if (start != this.users.pageNum)
+                    vue.list(start);
+            },
+            jump: function (page) {
+                if ('first' == page && 1 != vue.users.pageNum)
+                    vue.list(1);
+
+                else if ('pre' == page && vue.users.hasPreviousPage)
+                    vue.list(vue.users.prePage);
+
+                else if ('next' == page && vue.users.hasNextPage)
+                    vue.list(vue.users.nextPage);
+
+                else if ('last' == page && vue.users.pageNum != vue.users.pages)
+                    vue.list(vue.users.pages);
+
+            }
+        }
+
+    })
+
+</script>
 </body>
 </html>

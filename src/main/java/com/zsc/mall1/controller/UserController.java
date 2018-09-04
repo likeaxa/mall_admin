@@ -1,8 +1,14 @@
 package com.zsc.mall1.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.zsc.mall1.bean.MyPageInfo;
 import com.zsc.mall1.bean.User;
+import com.zsc.mall1.service.Result;
 import com.zsc.mall1.service.UserService;
 import com.zsc.mall1.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +16,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class UserController {
@@ -24,18 +32,27 @@ public class UserController {
 
 
     @GetMapping("admin/user")
-    public PageInfo<User> getUser(@RequestParam(value = "username",defaultValue = "请输入需要查找用户") String username ,
+    public MyPageInfo<User> getUser(@RequestParam(value = "username",defaultValue = "请输入需要查找用户") String username ,
                                   @RequestParam(value = "start", defaultValue = "1") int start,
                                   @RequestParam(value = "size", defaultValue = "5") int size) throws Exception{
 
+            if(Result.getStatusCode()==401){
+                MyPageInfo<User> myPageInfo = new MyPageInfo<>();
+                myPageInfo.setStatusCode(Result.getStatusCode());
+                return myPageInfo;
+            }
             if(!username.equals("请输入需要查找用户")){
                 PageHelper.startPage(start,size,"id desc");
                 List<User> users = userService.getSimpleUser(username);
-                return new PageInfo<>(users,5);
+                MyPageInfo<User> myPageInfo = new MyPageInfo<>(users,5);
+                myPageInfo.setStatusCode(Result.getStatusCode());
+                return myPageInfo;
             }else {
                 PageHelper.startPage(start,size,"id desc");
                 List<User> users=userService.getAllUser();
-                return  new PageInfo<>(users,5); //5表示导航分页最多有5个，像 [1,2,3,4,5] 这样
+                MyPageInfo<User> myPageInfo = new MyPageInfo<>(users,5);
+                myPageInfo.setStatusCode(Result.getStatusCode());
+                return myPageInfo;
             }
 
 
@@ -47,10 +64,11 @@ public class UserController {
     public User getUserById(@RequestParam(value = "userId") Integer id){
         return  userService.getUserById(id);
     }
+
     @PutMapping("/admin/user")
     public String  insertUser(@RequestBody User user){
 
-       // System.out.println(user.getUsername());
+        System.out.println(user.getUsername());
         boolean flag =userService.insertUser(user);
         return resultToView(flag);
     }
@@ -61,6 +79,7 @@ public class UserController {
         boolean flag =userService.updateUser(user);
         return resultToView(flag);
     }
+
     @DeleteMapping("/admin/user")
     public String deleteUser(@RequestParam(value = "userId") Integer id){
         boolean flag =userService.deleteUser(id);

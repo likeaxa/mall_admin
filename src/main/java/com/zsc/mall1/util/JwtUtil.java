@@ -35,6 +35,7 @@ public class JwtUtil {
                     .parseClaimsJws(jwt)
                     .getBody()
                     .getSubject();
+
         }catch (JwtException ex){
             System.out.println("签证失效");
             return null;

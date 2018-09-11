@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="referrer" content="no-referrer"/>
+    <!-- Vue.js 开发环境版本，包含了有帮助的命令行警告 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!--  axios  -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!--  echarts  -->
+    <script src="http://echarts.baidu.com/build/dist/echarts.js"></script>
+
+    <title>test</title>
+</head>
+<body>
+<div id="main" style="width: 1000px; height: 600px"></div>
+<div id="ss"></div>
+<script type="text/javascript">
+
+    require.config({
+        paths: {
+            echarts: 'http://echarts.baidu.com/build/dist'
+        }
+    });
+    require(["echarts", "echarts/chart/force"], function (ec) {
+        var url = "http://134.175.46.29:8080/api/association";
+        axios.get(url).then(function (response) {
+            console.log(response.data);
+           // self.books = response.data;
+              alert(response.data)
+        });
+        var myChart = ec.init(document.getElementById('main'), 'macarons');
+        var webkitDep = {
+            categories: [{name: "购买的商品"} ],   //关系网类别
+            nodes: [{category: 0, name: "西瓜", value: 5, id: 0},  //展示的节点 //category与关系网类别索引对应 //我的源数据中没有id属性，这里放出来的是目标数据，id是自动生成的
+                {category: 0, name: "香蕉", value: 3, id: 1},
+                {category: 0, name: "芒果，葡萄", value: 1, id: 2},
+                {category: 0, name: "火龙果", value: 1, id: 3},
+                {category: 0, name: "石榴", value: 3, id: 4},
+                {category: 0, name: "梨子", value: 1, id: 5},
+                {category: 0, name: "西梅，香蕉", value: 1, id: 6}],
+            links: [{source: 0, target: 1, value: 5},    //节点之间连接 //source起始节点，0表示第一个节点  //target目标节点，1表示与索引(id)为1的节点进行连接
+                {source: 1, target: 2, value: 3},
+                {source: 1, target: 3, value: 3},
+                {source: 0, target: 4, value: 5},
+                {source: 4, target: 5, value: 3},
+                {source: 4, target: 6, value: 3}
+            ]
+        };
+        var option1 = {
+            legend: {
+                x: 'left',//图例位置
+                //图例的名称
+                //此处的数据必须和关系网类别中name相对应
+                data: webkitDep.categories.map(function (a) {
+                    return a.name;
+                })
+            },
+            series: [{
+                type: 'force',
+                layout: 'force',
+                // animation: false,
+                label: {
+                    normal: {
+                        show: true,
+                        position: 'right'
+                    }
+                },
+                draggable: true,
+                force: {
+                    layoutAnimation: true,
+                    // xAxisIndex : 0, //x轴坐标 有多种坐标系轴坐标选项
+                    // yAxisIndex : 0, //y轴坐标
+                    gravity: 0.03,  //节点受到的向中心的引力因子。该值越大节点越往中心点靠拢。
+                    edgeLength: 55,  //边的两个节点之间的距离，这个距离也会受 repulsion。[10, 50] 。值越小则长度越长
+                    repulsion: 150  //节点之间的斥力因子。支持数组表达斥力范围，值越大斥力越大。
+                },
+                data: webkitDep.nodes.map(function (node, idx) {  //node数据
+                   // alert("1");
+                    node.id = idx;
+                    return node;
+                }),
+                categories: webkitDep.categories,  //关系网类别，可以写多组
+                edges: webkitDep.links  //link数据
+            }]
+        };
+        var option = {
+            title : {
+                text: '商品置信度',
+                subtext: '数据基于spark计算',
+                x:'right',
+                y:'bottom'
+            },
+            tooltip : {
+                trigger: 'item',
+                formatter: '{a} : {b} : {c}'
+            },
+            toolbox: {
+                show : true,
+                feature : {
+                    restore : {show: true},
+                   // magicType: {show: true, type: ['force', 'chord']},
+                    saveAsImage : {show: true}
+                }
+            },
+            legend: {
+                x: 'left',
+                data:['商品置信度']
+            },
+            series : [
+                {
+                    type:'force',
+                    name : "商品置信度",
+                    ribbonType: false,
+                    categories : webkitDep.categories,
+                    itemStyle: {
+                        normal: {
+                            label: {
+                                show: true,
+                                textStyle: {
+                                    color: '#333'
+                                }
+                            },
+                            nodeStyle : {
+                                brushType : 'both',
+                                borderColor : 'rgba(255,215,0,0.4)',
+                                borderWidth : 1
+                            }
+                        },
+                        emphasis: {
+                            label: {
+                                show: false
+                                // textStyle: null      // 默认使用全局文本样式，详见TEXTSTYLE
+                            },
+                            nodeStyle : {
+                                //r: 30
+                            },
+                            linkStyle : {}
+                        }
+                    },
+                    minRadius : 15,
+                    maxRadius : 25,
+                    gravity: 1.1,
+                    scaling: 1.2,
+                    draggable: false,
+                    linkSymbol: 'arrow',
+                    steps: 10,
+                    coolDown: 0.9,
+                    //preventOverlap: true,
+                    nodes:webkitDep.nodes.map(function (node, idx) {  //node数据
+                        node.id = idx;
+                        return node;
+                    }),
+                    links : webkitDep.links
+                }
+            ]
+        };
+        myChart.setOption(option);
+        var ecConfig = require('echarts/config');
+        function focus(param) {
+            var data = param.data;
+            var links = option.series[0].links;
+            var nodes = option.series[0].nodes;
+            if (
+                data.source != null
+                && data.target != null
+            ) { //点击的是边
+                var sourceNode = nodes.filter(function (n) {
+                    return n.source == data.source;
+                })[0];
+                var targetNode = nodes.filter(function (n) {
+                    return n.target == data.target;
+                })[0];
+                var valueNode = nodes.filter(function (n) {
+                    return n.value == data.value;
+                })[0];
+                console.log("选中了边 " + sourceNode.source + ' -> ' + targetNode.target + ' (' + valueNode.value + ')');
+            } else { // 点击的是点
+                console.log("选中了" + data.name + '(' + data.value + ')');
+            }
+        }
+
+        myChart.on(ecConfig.EVENT.CLICK, focus);
+    });
+
+</script>
+</body>
+</html>

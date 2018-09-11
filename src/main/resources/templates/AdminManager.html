@@ -68,6 +68,8 @@
                             class="fa fa-edit fa-fw"></i> 用户管理</a></li>
                     <li><a href="/adminmanager" class="active"><i
                             class="fa fa-edit fa-fw"></i> 商家推荐</a></li>
+                    <li><a href="/datashow" ><i
+                            class="fa fa-edit fa-fw"></i> 数据分析</a></li>
                 </ul>
             </div>
 
@@ -218,6 +220,8 @@
                     //  alert(self.users)
                 })
             }, prosample: function (productId) {
+
+
                 // var url = "/prosample?productId=" + productId;
                 var url = "http://134.175.46.29:8080/api/similar/" + productId;
                 axios.get(url).then(function (response) {

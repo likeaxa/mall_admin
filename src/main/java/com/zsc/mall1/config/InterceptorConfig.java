@@ -23,7 +23,8 @@ public class InterceptorConfig implements WebMvcConfigurer{
                 .excludePathPatterns("/bookmanager")
                 .excludePathPatterns("/static/**")
                 .excludePathPatterns("/adminmanager")
-                .excludePathPatterns("/prosample/**");
+                .excludePathPatterns("/prosample/**")
+                .excludePathPatterns("/test");
     }
 
     @Bean

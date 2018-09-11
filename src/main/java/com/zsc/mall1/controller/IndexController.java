@@ -36,4 +36,13 @@ public class IndexController {
         return "UserManager";
     }
 
+    @RequestMapping("/test")
+    public  String  test(){
+        return "test";
+    }
+
+    @RequestMapping("/datashow")
+    public  String  datashow(){
+        return "DataShow";
+    }
 }

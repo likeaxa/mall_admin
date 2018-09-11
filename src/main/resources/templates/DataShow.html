@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <!-- Bootstrap Core CSS -->
+    <link href="../static/assets/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- MetisMenu CSS -->
+    <link href="../static/assets/css/metisMenu.min.css" rel="stylesheet">
+
+    <!-- DataTables CSS -->
+    <link href="../static/assets/css/dataTables.bootstrap.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="../static/assets/css/sb-admin-2.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="../static/assets/css/font-awesome.min.css" rel="stylesheet"
+          type="text/css">
+    <link href="../static/assets/css/boot-crm.css" rel="stylesheet"
+          type="text/css">
+    <link href="../static/assets/css/bootstrap-datetimepicker.min.css" rel="stylesheet"
+          type="text/css">
+
+
+    <!--弹出对话框需要，jQuery的要放前面 ，不能换顺序，不然不能使用，我也不知道为什么-->
+    <script src="../static/assets/js/jquery.js" type="text/javascript"></script>
+    <script src="../static/assets/js/bootstrap.min.js" type="text/javascript"></script>
+    <!-- Vue.js 开发环境版本，包含了有帮助的命令行警告 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <!--  axios  -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <!--  echarts  -->
+    <script src="http://echarts.baidu.com/build/dist/echarts.js"></script>
+    <title>优优图书</title>
+</head>
+<body>
+<div id="userlist">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-static-top" role="navigation"
+         style="margin-bottom: 0">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse"
+                    data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span> <span
+                    class="icon-bar"></span> <span class="icon-bar"></span> <span
+                    class="icon-bar"></span>
+            </button>
+
+            <a class="navbar-brand" href="#">优优图书后台管理系统</a>
+            <a class="navbar-brand" onclick="deleteItem()">退出登录</a>
+        </div>
+
+
+        <div class="navbar-default sidebar" role="navigation">
+            <div class="sidebar-nav navbar-collapse">
+                <ul class="nav" id="side-menu">
+                    <li><a href="/bookmanager"><i
+                            class="fa fa-edit fa-fw"></i> 图书管理</a></li>
+                    <li><a href="/usermanager"><i
+                            class="fa fa-edit fa-fw"></i> 用户管理</a></li>
+                    <li><a href="/adminmanager"><i
+                            class="fa fa-edit fa-fw"></i> 商家推荐</a></li>
+                    <li><a href="/datashow" class="active"><i
+                            class="fa fa-edit fa-fw"></i> 数据分析</a></li>
+                </ul>
+            </div>
+
+        </div>
+        <!-- /.navbar-static-side --> </nav>
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">数据分析</h1>
+            </div>
+            <!-- /.col-lg-12 -->
+            <div id="main" style="width: 800px; height: 500px"></div>
+            <div id="ss"></div>
+        </div>
+
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+    require.config({
+        paths: {
+            echarts: 'http://echarts.baidu.com/build/dist'
+        }
+    });
+    require(["echarts", "echarts/chart/force"], function (ec) {
+        var url = "http://134.175.46.29:8080/api/association";
+
+        axios.get(url).then(function (response) {
+            console.log(response.data);
+            // self.books = response.data;
+            var webkitDep = response.data;
+          //  alert(webkitDep);
+            var option = {
+                title: {
+                    text: '商品置信度',
+                    subtext: '数据基于spark计算',
+                    x: 'right',
+                    y: 'bottom'
+                },
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{a} : {b} : {c}'
+                },
+                toolbox: {
+                    show: true,
+                    feature: {
+                        restore: {show: true},
+                        // magicType: {show: true, type: ['force', 'chord']},
+                        saveAsImage: {show: true}
+                    }
+                },
+                legend: {
+                    x: 'left',
+                    data: ['商品置信度']
+                },
+                series: [
+                    {
+                        type: 'force',
+                        name: "商品置信度",
+                        ribbonType: false,
+                        categories: webkitDep.categories,
+                        itemStyle: {
+                            normal: {
+                                label: {
+                                    show: true,
+                                    textStyle: {
+                                        color: '#333'
+                                    }
+                                },
+                                nodeStyle: {
+                                    brushType: 'both',
+                                    borderColor: 'rgba(255,215,0,0.4)',
+                                    borderWidth: 1
+                                }
+                            },
+                            emphasis: {
+                                label: {
+                                    show: false
+                                    // textStyle: null      // 默认使用全局文本样式，详见TEXTSTYLE
+                                },
+                                nodeStyle: {
+                                    //r: 30
+                                },
+                                linkStyle: {}
+                            }
+                        },
+                        minRadius: 15,
+                        maxRadius: 25,
+                        gravity: 1.1,
+                        scaling: 1.2,
+                        draggable: false,
+                        linkSymbol: 'arrow',
+                        steps: 10,
+                        coolDown: 0.9,
+                        //preventOverlap: true,
+                        nodes: webkitDep.nodes.map(function (node, idx) {  //node数据
+                            node.id = idx;
+                            return node;
+                        }),
+                        links: webkitDep.links
+                    }
+                ]
+            };
+            myChart.setOption(option);
+        });
+        var myChart = ec.init(document.getElementById('main'), 'macarons');
+        // var webkitDep = {
+        //     categories: [{"name": "喜欢的商品"}, {"name": "喜欢的商品"}],
+        //     nodes: [
+        //         {category: 1, name: "苏菲的世界", value: 1, id: 1},
+        //         {category: 1, name: "小王子", value: 1, id: 0},
+        //         {category: 1, name: "傲慢与偏见", value: 1, id: 2},
+        //         {category: 1, name: "目送", value: 1, id: 3},
+        //         {category: 1, name: "撒哈拉的故事", value: 1, id: 4}
+        //         ],
+        //     links: [{source: 4, target: 1, value: 0.75},
+        //         {source: 4, target: 3, value: 0.75},
+        //         {source: 2, target: 3, value: 0.7272727272727273},
+        //         {source: 0, target: 3, value: 0.8},
+        //         {source: 1, target: 3, value: 0.75},
+        //         {source: 1, target: 4, value: 0.5625},
+        //         {source: 3, target: 1, value: 0.75},
+        //         {source: 3, target: 4, value: 0.5625},
+        //         {source: 3, target: 2, value: 0.5},
+        //         {source: 3, target: 0, value: 0.5}
+        //         ]
+        // };
+
+        // var ecConfig = require('echarts/config');
+        //
+        // function focus(param) {
+        //     var data = param.data;
+        //     var links = option.series[0].links;
+        //     var nodes = option.series[0].nodes;
+        //     if (
+        //         data.source != null
+        //         && data.target != null
+        //     ) { //点击的是边
+        //         var sourceNode = nodes.filter(function (n) {
+        //             return n.source == data.source;
+        //         })[0];
+        //         var targetNode = nodes.filter(function (n) {
+        //             return n.target == data.target;
+        //         })[0];
+        //         var valueNode = nodes.filter(function (n) {
+        //             return n.value == data.value;
+        //         })[0];
+        //         console.log("选中了边 " + sourceNode.source + ' -> ' + targetNode.target + ' (' + valueNode.value + ')');
+        //     } else { // 点击的是点
+        //         console.log("选中了" + data.name + '(' + data.value + ')');
+        //     }
+        // }
+        //
+        // myChart.on(ecConfig.EVENT.CLICK, focus);
+    });
+
+</script>
+
+</body>
+</html>
